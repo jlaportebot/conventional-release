@@ -1,0 +1,126 @@
+[project]
+name = "conventional-release"
+version = "0.1.0"
+description = "Generate release notes from conventional commits with semantic versioning and GitHub integration"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "jlaportebot", email = "jlaportebot@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "gitpython>=3.1",
+    "githubkit>=0.16",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "rich>=13.7",
+    "semver>=3.0",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Version Control",
+    "Topic :: Software Development :: Build Tools",
+]
+
+[project.scripts]
+conventional-release = "conventional_release.cli:main"
+
+[dependency-groups]
+dev = [
+    {include-group = "lint"},
+    {include-group = "test"},
+    {include-group = "audit"},
+]
+lint = ["ruff>=0.7", "ty>=0.0.51"]
+test = [
+    "pytest>=9.0",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.0",
+    "pytest-mock>=3.0",
+]
+audit = ["pip-audit>=1.0"]
+
+[build-system]
+requires = ["uv_build>=0.11,<0.12"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D",        # docstring rules - too strict for CLI
+    "COM812",   # trailing comma in format string
+    "ISC001",   # redundant isinstance check
+    "PLR0913",  # too many arguments (CLI entry points)
+    "PLR0917",  # too many positional arguments (CLI)
+    "FBT001",   # boolean positional argument (Click options)
+    "DOC501",   # missing exception in docstring (CLI)
+    "PLW0717",  # try clause too many statements (CLI)
+    "PLC0415",  # import not at top level (lazy imports in CLI)
+    "B904",     # raise without from (SystemExit in CLI)
+    "RUF003",   # ambiguous dash in comments
+    "RUF002",   # ambiguous dash in docstrings
+    "PLR2004",  # magic value in comparison (threshold constants)
+    "C901",     # function too complex (some parsing logic)
+    "PLR0912",  # too many branches (parsing logic)
+    "PLR0914",  # too many local variables (parsing)
+    "SIM108",   # ternary operator suggestion
+    "DTZ001",   # datetime without tzinfo (explicit UTC handling)
+    "PLR6104",  # use -= operator
+    "UP045",    # Use X | None for type annotations (py310+)
+    "UP035",    # typing.Dict deprecated
+    "UP006",    # Use dict instead of Dict
+    "UP007",    # Use X | Y for type annotations
+]
+per-file-ignores = { "tests/*" = [
+    "S101",     # assert statements in tests
+    "S105",     # hardcoded password false positives (token variables)
+    "ANN201",   # missing return type annotations in tests
+    "ANN202",   # missing return type annotation for private functions in tests
+    "ANN001",   # missing argument type annotations in tests
+    "ANN002",   # missing argument type annotations in tests
+    "ANN003",   # missing argument type annotations in tests
+    "PLR6301",  # methods could be functions in tests
+    "PLR2004",  # magic values in tests
+    "PLC1901",  # empty string comparisons in tests
+    "PLC2701",  # private name imports from external modules (testing internals)
+    "F401",     # unused imports in tests (pytest fixtures)
+    "INP001",   # implicit namespace package in tests
+    "S105",     # hardcoded password false positives
+    "DTZ001",   # datetime without timezone in tests
+    "FBT003",   # boolean positional value in function call (test fixtures)
+    "S108",     # probable insecure usage of temporary file
+] }
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=conventional_release --cov-fail-under=80 --tb=short -v"
+markers = [
+    "slow = marks tests as slow",
+    "integration = marks tests as integration tests",
+]
+
+[tool.ty.environment]
+python-version = "3.11"
+
+[tool.ty.terminal]
+error-on-warning = true
+
+[tool.ty.rules]
+possibly-unresolved-reference = "error"
+unused-ignore-comment = "warn"
