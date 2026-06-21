@@ -6,7 +6,12 @@ import os
 from typing import Any
 
 from githubkit import GitHub
-from githubkit_schemas.latest.models import ReposOwnerRepoReleasesPostBody as CreateReleaseRequest
+from githubkit_schemas.latest.models import (
+    ReposOwnerRepoGitTagsPostBody as CreateTagRequest,
+)
+from githubkit_schemas.latest.models import (
+    ReposOwnerRepoReleasesPostBody as CreateReleaseRequest,
+)
 
 from conventional_release.models import ReleaseConfig, ReleaseNotes, Version
 
@@ -69,7 +74,7 @@ def create_github_release(
     response = client.rest.repos.async_create_release(
         owner=owner,
         repo=repo,
-        data=request,
+        data=request,  # ty: ignore[invalid-argument-type]
     )
 
     return response.parsed_data
@@ -106,7 +111,7 @@ async def create_github_release_async(
     response = await client.rest.repos.async_create_release(
         owner=owner,
         repo=repo,
-        data=request,
+        data=request,  # ty: ignore[invalid-argument-type]
     )
 
     return response.parsed_data
@@ -130,23 +135,23 @@ async def create_or_update_tag(
     sha = config.target_commitish or "main"
 
     # Create tag
-    tag_data = {
-        "tag": tag_name,
-        "message": f"Release {tag_name}",
-        "object": sha,
-        "type": "commit",
-        "tagger": {
+    tag_data = CreateTagRequest(
+        tag=tag_name,
+        message=f"Release {tag_name}",
+        object=sha,
+        type="commit",
+        tagger={
             "name": config.tagger_name or "conventional-release",
             "email": config.tagger_email or "noreply@example.com",
             "date": None,  # Will use current time
         },
-    }
+    )
 
     # This uses the Git API to create a tag object
     response = await client.rest.git.async_create_tag(
         owner=owner,
         repo=repo,
-        data=tag_data,
+        data=tag_data,  # ty: ignore[invalid-argument-type]
     )
 
     return response.parsed_data

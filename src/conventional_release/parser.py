@@ -172,12 +172,12 @@ def extract_commits_from_git(
     # Build rev-list arguments
     rev_range = f"{since_tag}..{until}" if since_tag else until
 
-    commits = [
+    commits: list[tuple[str, str, str, str, str]] = [
         (
-            commit.message.strip(),
+            str(commit.message.strip()),
             commit.hexsha,
-            commit.author.name,
-            commit.author.email,
+            str(commit.author.name) if commit.author.name else "",
+            str(commit.author.email) if commit.author.email else "",
             commit.authored_datetime.isoformat(),
         )
         for commit in repo.iter_commits(rev_range, max_count=limit)

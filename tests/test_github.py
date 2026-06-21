@@ -209,12 +209,12 @@ class TestCreateOrUpdateTag:
         assert call_args.kwargs["owner"] == "owner"
         assert call_args.kwargs["repo"] == "repo"
         data = call_args.kwargs["data"]
-        assert data["tag"] == "v1.0.0"
-        assert data["message"] == "Release v1.0.0"
-        assert data["object"] == "main"
-        assert data["type"] == "commit"
-        assert data["tagger"]["name"] == "Test Bot"
-        assert data["tagger"]["email"] == "bot@example.com"
+        assert data.tag == "v1.0.0"
+        assert data.message == "Release v1.0.0"
+        assert data.object_ == "main"
+        assert data.type == "commit"
+        assert data.tagger.name == "Test Bot"
+        assert data.tagger.email == "bot@example.com"
 
 
 class TestGetRepoInfoFromRemote:
