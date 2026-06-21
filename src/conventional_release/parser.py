@@ -19,26 +19,28 @@ BREAKING_CHANGE_PATTERN = re.compile(r"^BREAKING CHANGE: (?P<description>.+)$", 
 
 
 def parse_commit(
-    message: str,
+    message: str | bytes,
     commit_hash: str,
-    author: str,
-    email: str,
+    author: str | None,
+    email: str | None,
     date: str,
 ) -> ConventionalCommit:
     """
     Parse a conventional commit message.
 
     Args:
-        message: The commit message
+        message: The commit message (str or bytes)
         commit_hash: Full commit hash
-        author: Author name
-        email: Author email
+        author: Author name (may be None)
+        email: Author email (may be None)
         date: Commit date (ISO format)
 
     Returns:
         Parsed ConventionalCommit object
     """
     raw_message = message
+    if isinstance(message, bytes):
+        message = message.decode("utf-8", errors="replace")
     lines = message.strip().split("\n")
 
     # Parse header line
@@ -54,10 +56,10 @@ def parse_commit(
             body="\n".join(lines[1:]) if len(lines) > 1 else "",
             footer={},
             hash=commit_hash,
-            author=author,
-            email=email,
+            author=author or "",
+            email=email or "",
             date=date,
-            raw_message=raw_message,
+            raw_message=raw_message if isinstance(raw_message, str) else raw_message.decode("utf-8", errors="replace"),
         )
 
     commit_type_str = match.group("type")
@@ -117,6 +119,7 @@ def parse_commit(
             # Remove the BREAKING CHANGE line from body
             body = BREAKING_CHANGE_PATTERN.sub("", body).strip()
 
+    raw_str = raw_message if isinstance(raw_message, str) else raw_message.decode("utf-8", errors="replace")
     return ConventionalCommit(
         type=commit_type,
         scope=scope,
@@ -124,14 +127,14 @@ def parse_commit(
         body=body,
         footer=footer,
         hash=commit_hash,
-        author=author,
-        email=email,
+        author=author or "",
+        email=email or "",
         date=date,
-        raw_message=raw_message,
+        raw_message=raw_str,
     )
 
 
-def parse_commits(commits_data: list[tuple[str, str, str, str, str]]) -> list[ConventionalCommit]:
+def parse_commits(commits_data: list[tuple[str | bytes, str, str | None, str | None, str]]) -> list[ConventionalCommit]:
     """
     Parse multiple commits.
 
@@ -172,7 +175,7 @@ def extract_commits_from_git(
     # Build rev-list arguments
     rev_range = f"{since_tag}..{until}" if since_tag else until
 
-    commits: list[tuple[str, str, str, str, str]] = [
+    commits: list[tuple[str | bytes, str, str | None, str | None, str]] = [
         (
             str(commit.message.strip()),
             commit.hexsha,

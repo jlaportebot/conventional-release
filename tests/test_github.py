@@ -121,10 +121,10 @@ class TestCreateGithubRelease:
         assert call_args.kwargs["owner"] == "owner"
         assert call_args.kwargs["repo"] == "repo"
         data = call_args.kwargs["data"]
-        assert data.tag_name == "v1.0.0"
-        assert data.name == "Release 1.0.0"
-        assert data.draft is False
-        assert data.prerelease is False
+        assert data["tag_name"] == "v1.0.0"
+        assert data["name"] == "Release 1.0.0"
+        assert data["draft"] is False
+        assert data["prerelease"] is False
 
     @pytest.mark.asyncio
     async def test_create_release_with_custom_config(self, mock_client, release_notes):
@@ -142,11 +142,11 @@ class TestCreateGithubRelease:
 
         call_args = mock_client.rest.repos.async_create_release.call_args
         data = call_args.kwargs["data"]
-        assert data.tag_name == "release/1.0.0"
-        assert data.name == "v1.0.0"
-        assert data.draft is True
-        assert data.prerelease is True
-        assert data.target_commitish == "develop"
+        assert data["tag_name"] == "release/1.0.0"
+        assert data["name"] == "v1.0.0"
+        assert data["draft"] is True
+        assert data["prerelease"] is True
+        assert data["target_commitish"] == "develop"
 
 
 class TestCreateGithubReleaseAsync:
@@ -209,12 +209,12 @@ class TestCreateOrUpdateTag:
         assert call_args.kwargs["owner"] == "owner"
         assert call_args.kwargs["repo"] == "repo"
         data = call_args.kwargs["data"]
-        assert data.tag == "v1.0.0"
-        assert data.message == "Release v1.0.0"
-        assert data.object_ == "main"
-        assert data.type == "commit"
-        assert data.tagger.name == "Test Bot"
-        assert data.tagger.email == "bot@example.com"
+        assert data["tag"] == "v1.0.0"
+        assert data["message"] == "Release v1.0.0"
+        assert data["object_"] == "main"
+        assert data["type"] == "commit"
+        assert data["tagger"]["name"] == "Test Bot"
+        assert data["tagger"]["email"] == "bot@example.com"
 
 
 class TestGetRepoInfoFromRemote:

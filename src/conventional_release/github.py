@@ -71,10 +71,10 @@ def create_github_release(
         generate_release_notes=False,
     )
 
-    response = client.rest.repos.async_create_release(
+    response = client.rest.repos.create_release(
         owner=owner,
         repo=repo,
-        data=request,  # ty: ignore[invalid-argument-type]
+        data=request.model_dump(),  # Convert Pydantic model to dict for API
     )
 
     return response.parsed_data
@@ -111,7 +111,7 @@ async def create_github_release_async(
     response = await client.rest.repos.async_create_release(
         owner=owner,
         repo=repo,
-        data=request,  # ty: ignore[invalid-argument-type]
+        data=request.model_dump(),  # Convert Pydantic model to dict for API
     )
 
     return response.parsed_data
@@ -138,7 +138,7 @@ async def create_or_update_tag(
     tag_data = CreateTagRequest(
         tag=tag_name,
         message=f"Release {tag_name}",
-        object=sha,
+        object_=sha,
         type="commit",
         tagger={
             "name": config.tagger_name or "conventional-release",
@@ -151,7 +151,7 @@ async def create_or_update_tag(
     response = await client.rest.git.async_create_tag(
         owner=owner,
         repo=repo,
-        data=tag_data,  # ty: ignore[invalid-argument-type]
+        data=tag_data.model_dump(),  # Convert Pydantic model to dict for API
     )
 
     return response.parsed_data
