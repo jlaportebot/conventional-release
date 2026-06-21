@@ -74,6 +74,7 @@ ignore = [
     "C901",     # function too complex (some parsing logic)
     "PLR0912",  # too many branches (parsing logic)
     "PLR0914",  # too many local variables (parsing)
+    "PLR0915",  # too many statements (parsing logic)
     "SIM108",   # ternary operator suggestion
     "DTZ001",   # datetime without tzinfo (explicit UTC handling)
     "PLR6104",  # use -= operator

@@ -49,6 +49,10 @@ def parse_commit(
 
     if not match:
         # Not a conventional commit, treat as chore
+        if isinstance(raw_message, str):
+            raw_str = raw_message
+        else:
+            raw_str = raw_message.decode("utf-8", errors="replace")
         return ConventionalCommit(
             type=CommitType.CHORE,
             scope=None,
@@ -59,7 +63,7 @@ def parse_commit(
             author=author or "",
             email=email or "",
             date=date,
-            raw_message=raw_message if isinstance(raw_message, str) else raw_message.decode("utf-8", errors="replace"),
+            raw_message=raw_str,
         )
 
     commit_type_str = match.group("type")
@@ -119,7 +123,10 @@ def parse_commit(
             # Remove the BREAKING CHANGE line from body
             body = BREAKING_CHANGE_PATTERN.sub("", body).strip()
 
-    raw_str = raw_message if isinstance(raw_message, str) else raw_message.decode("utf-8", errors="replace")
+    if isinstance(raw_message, str):
+        raw_str = raw_message
+    else:
+        raw_str = raw_message.decode("utf-8", errors="replace")
     return ConventionalCommit(
         type=commit_type,
         scope=scope,
@@ -134,7 +141,9 @@ def parse_commit(
     )
 
 
-def parse_commits(commits_data: list[tuple[str | bytes, str, str | None, str | None, str]]) -> list[ConventionalCommit]:
+def parse_commits(
+    commits_data: list[tuple[str | bytes, str, str | None, str | None, str]],
+) -> list[ConventionalCommit]:
     """
     Parse multiple commits.
 
