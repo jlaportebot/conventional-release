@@ -456,4 +456,3 @@ def generate(ctx: click.Context, output: str | None) -> None:
 
 if __name__ == "__main__":
     main()
-

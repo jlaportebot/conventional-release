@@ -38,4 +38,3 @@ __all__ = [
     "prepend_release_notes",
     "validate_changelog",
 ]
-

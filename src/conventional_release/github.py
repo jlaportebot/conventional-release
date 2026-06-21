@@ -13,6 +13,8 @@ from conventional_release.models import ReleaseConfig, ReleaseNotes, Version
 
 class GitHubReleaseError(Exception):
     """Error during GitHub release creation."""
+
+
 def create_github_client(token: str | None = None) -> GitHub:
     """Create GitHub API client."""
     if token is None:
@@ -174,4 +176,3 @@ def get_repo_info_from_remote(repo_path: str = ".") -> tuple[str, str] | None:
         pass
 
     return None
-

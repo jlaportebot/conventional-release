@@ -193,12 +193,12 @@ class Version:
         return version
 
     def __lt__(self, other: Version) -> bool:
-        if self.major != other.major:
-            return self.major < other.major
-        if self.minor != other.minor:
-            return self.minor < other.minor
-        if self.patch != other.patch:
-            return self.patch < other.patch
+        # Compare major, minor, patch first
+        self_tuple = (self.major, self.minor, self.patch)
+        other_tuple = (other.major, other.minor, other.patch)
+        if self_tuple != other_tuple:
+            return self_tuple < other_tuple
+
         # Prerelease versions are less than release versions
         if self.prerelease is None and other.prerelease is not None:
             return False
@@ -265,4 +265,3 @@ class ReleaseConfig:
     def get_section_name(self, commit_type: CommitType) -> str:
         """Get custom section name for commit type."""
         return self.commit_types.get(commit_type.value, commit_type.release_section())
-

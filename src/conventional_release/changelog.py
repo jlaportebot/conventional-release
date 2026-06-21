@@ -112,7 +112,7 @@ def generate_changelog_from_git(
     prev_tag = None
 
     for tag in tags:
-        version_str = tag.name[len(tag_prefix):]
+        version_str = tag.name[len(tag_prefix) :]
         try:
             version = Version.parse(version_str)
         except ValueError:
@@ -171,5 +171,3 @@ def validate_changelog(changelog_path: str = "CHANGELOG.md") -> list[str]:
         seen.add(version)
 
     return issues
-
-

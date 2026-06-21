@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from datetime import datetime, timezone, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -213,4 +213,3 @@ def update_version_file(
     version_path = Path(version_file)
     with version_path.open("w") as f:
         f.write(str(version))
-

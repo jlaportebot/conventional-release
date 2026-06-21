@@ -172,17 +172,16 @@ def extract_commits_from_git(
     # Build rev-list arguments
     rev_range = f"{since_tag}..{until}" if since_tag else until
 
-    commits = []
-    for commit in repo.iter_commits(rev_range, max_count=limit):
-        commits.append(
-            (
-                commit.message.strip(),
-                commit.hexsha,
-                commit.author.name,
-                commit.author.email,
-                commit.authored_datetime.isoformat(),
-            )
+    commits = [
+        (
+            commit.message.strip(),
+            commit.hexsha,
+            commit.author.name,
+            commit.author.email,
+            commit.authored_datetime.isoformat(),
         )
+        for commit in repo.iter_commits(rev_range, max_count=limit)
+    ]
 
     return parse_commits(commits)
 
@@ -208,4 +207,3 @@ def get_commits_since_last_release(
     """Get all commits since the last release tag."""
     latest_tag = get_latest_tag(repo_path, tag_prefix)
     return extract_commits_from_git(repo_path, since_tag=latest_tag)
-
