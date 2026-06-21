@@ -100,6 +100,15 @@ per-file-ignores = { "tests/*" = [
     "DTZ001",   # datetime without timezone in tests
     "FBT003",   # boolean positional value in function call (test fixtures)
     "S108",     # probable insecure usage of temporary file
+    "A002",     # function argument shadowing builtin (type parameter)
+    "E501",     # line too long (test data strings)
+    "PLW1510",  # subprocess.run without explicit check (test helpers)
+    "S607",     # starting process with partial executable path (git in tests)
+    "SIM117",   # nested with statements (test mocks)
+    "PLR0124",  # name compared with itself (test assertions)
+    "PT011",    # pytest.raises too broad (test helpers)
+    "PTH109",   # os.getcwd() should be Path.cwd() (test helpers)
+    "FBT002",   # boolean default positional argument (test helpers)
 ] }
 
 [tool.ruff.format]
