@@ -138,9 +138,7 @@ class TestCreateGithubRelease:
         )
         from conventional_release.github import create_github_release_async
 
-        await create_github_release_async(
-            "owner", "repo", release_notes, config, mock_client
-        )
+        await create_github_release_async("owner", "repo", release_notes, config, mock_client)
 
         call_args = mock_client.rest.repos.async_create_release.call_args
         data = call_args.kwargs["data"]
